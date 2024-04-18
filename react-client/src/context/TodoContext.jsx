@@ -6,6 +6,7 @@ const TodoContext = createContext();
 export const TodoProvider = ({ children }) => {
   const apiUrl = "http://localhost:3000";
   const [todos, setTodos] = useState([]);
+  const [hideDoneTasks, setHideDoneTasks] = useState(false);
 
   useEffect(() => {
     fetchTodos();
@@ -70,8 +71,21 @@ export const TodoProvider = ({ children }) => {
     );
   };
 
+  const hideCompletedTodos = () => {
+    setHideDoneTasks(!hideDoneTasks);
+  };
+
   return (
-    <TodoContext.Provider value={{ todos, addTodo, deleteTodo, completeTodo }}>
+    <TodoContext.Provider
+      value={{
+        todos,
+        hideDoneTasks,
+        addTodo,
+        deleteTodo,
+        completeTodo,
+        hideCompletedTodos,
+      }}
+    >
       {children}
     </TodoContext.Provider>
   );
