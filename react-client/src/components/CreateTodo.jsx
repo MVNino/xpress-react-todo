@@ -22,7 +22,7 @@ const CreateTodo = () => {
           setTodoText(e.target.value);
         }}
       />
-      
+
       <button type="button" onClick={() => onTodoSubmit()}>
         Add
       </button>

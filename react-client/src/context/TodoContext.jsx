@@ -4,14 +4,15 @@ import PropTypes from "prop-types";
 const TodoContext = createContext();
 
 export const TodoProvider = ({ children }) => {
-    const [todos, setTodos] = useState([]);
+  const apiUrl = "http://localhost:3000";
+  const [todos, setTodos] = useState([]);
 
   useEffect(() => {
     fetchTodos();
   }, []);
 
   const fetchTodos = async () => {
-    const response = await fetch("http://localhost:3000/api/todos");
+    const response = await fetch(`${apiUrl}/api/todos`);
 
     const { data } = await response.json();
 
@@ -19,7 +20,7 @@ export const TodoProvider = ({ children }) => {
   };
 
   const addTodo = async (title) => {
-    const response = await fetch("http://localhost:3000/api/todos", {
+    const response = await fetch(`${apiUrl}/api/todos`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -33,7 +34,7 @@ export const TodoProvider = ({ children }) => {
   };
 
   const deleteTodo = async (id) => {
-    const response = await fetch(`http://localhost:3000/api/todos/${id}`, {
+    const response = await fetch(`${apiUrl}/api/todos/${id}`, {
       method: "DELETE",
     });
 
@@ -45,7 +46,7 @@ export const TodoProvider = ({ children }) => {
     // Todo record to update
     const foundTodo = todos.find((todo) => todo.id === id);
 
-    const response = await fetch(`http://localhost:3000/api/todos/${id}`, {
+    const response = await fetch(`${apiUrl}/api/todos/${id}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
