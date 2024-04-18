@@ -1,0 +1,83 @@
+import { createContext, useEffect, useState } from "react";
+import PropTypes from "prop-types";
+
+const TodoContext = createContext();
+
+export const TodoProvider = ({ children }) => {
+    const [todos, setTodos] = useState([]);
+
+  useEffect(() => {
+    fetchTodos();
+  }, []);
+
+  const fetchTodos = async () => {
+    const response = await fetch("http://localhost:3000/api/todos");
+
+    const { data } = await response.json();
+
+    setTodos(data.map((item) => item));
+  };
+
+  const addTodo = async (title) => {
+    const response = await fetch("http://localhost:3000/api/todos", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ title: title }),
+    });
+
+    const { data } = await response.json();
+
+    setTodos([...todos, data]);
+  };
+
+  const deleteTodo = async (id) => {
+    const response = await fetch(`http://localhost:3000/api/todos/${id}`, {
+      method: "DELETE",
+    });
+
+    if (response.status === 200)
+      setTodos(todos.filter((todo) => todo.id !== id));
+  };
+
+  const completeTodo = async (id) => {
+    // Todo record to update
+    const foundTodo = todos.find((todo) => todo.id === id);
+
+    const response = await fetch(`http://localhost:3000/api/todos/${id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        isCompleted: !foundTodo.isCompleted,
+      }),
+    });
+
+    const { data } = await response.json();
+
+    setTodos(
+      todos.map((todo) =>
+        todo.id === id
+          ? {
+              ...todo,
+              isCompleted: data.isCompleted,
+            }
+          : todo
+      )
+    );
+  };
+
+  return (
+    <TodoContext.Provider value={{ todos, addTodo, deleteTodo, completeTodo }}>
+      {children}
+    </TodoContext.Provider>
+  );
+};
+
+TodoProvider.propTypes = {
+  children: PropTypes.any,
+};
+
+export default TodoContext;
