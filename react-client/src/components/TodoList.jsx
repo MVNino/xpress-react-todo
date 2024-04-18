@@ -2,12 +2,13 @@ import { useContext } from "react";
 import TodoContext from "../context/TodoContext";
 
 const TodoList = () => {
-  const { todos, deleteTodo, completeTodo } = useContext(TodoContext);
+  const { todos, deleteTodo, completeTodo, hideDoneTasks } =
+    useContext(TodoContext);
 
   return (
     <ul>
       {todos.map((todo) => (
-        <li key={todo.id}>
+        <li key={todo.id} hidden={hideDoneTasks && todo.isCompleted}>
           <input
             type="checkbox"
             className="checkbox-todo"
